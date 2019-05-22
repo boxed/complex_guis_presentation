@@ -2,7 +2,7 @@ from django import forms
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
-from tri_form_presentation.models import Room
+from .models import Room
 
 
 def example1(request):
