@@ -15,9 +15,22 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from django.urls import path
+
 from forum import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^1/$', views.example1)
+
+    path(r'django/1/', views.django_example1),
+    path(r'tri_form/1/', views.tri_form_example1),
+
+    path(r'django/1b/', views.DjangoExample1B.as_view()),
+    path(r'tri_form/1b/', views.tri_form_example1_b),
+
+    path(r'django/2/', views.DjangoExample2.as_view()),
+    path(r'tri_form/2/', views.tri_form_example2),
+
+    path(r'django/3/<int:pk>/', views.DjangoExample3.as_view()),
+    path(r'tri_form/3/<int:pk>/', views.tri_form_example3),
 ]

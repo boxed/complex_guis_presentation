@@ -4,7 +4,14 @@ from django.db import models
 
 class Room(models.Model):
     name = models.CharField(max_length=255)
-    description = models.TextField()
+    description = models.TextField(blank=True)
+
+    last_audit = models.DateTimeField(auto_now_add=True)
+    auditor = models.ForeignKey(User, null=True, on_delete=models.PROTECT)
+    auditor_notes = models.TextField(blank=True)
+
+    def get_absolute_url(self):
+        return '/'
 
 
 class Message(models.Model):
