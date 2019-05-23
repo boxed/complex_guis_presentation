@@ -1,11 +1,12 @@
+<h1>Switch user</h1>
+
 current user is {{ user }}
 
 <p></p>
 
+
 <form method="post">
     {% csrf_token %}
-    <table>
-        {{ form }}
-    </table>
+    {{ form }}
     <input type="submit" value="Submit">
 </form>

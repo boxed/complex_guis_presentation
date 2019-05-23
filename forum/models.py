@@ -20,3 +20,19 @@ class Message(models.Model):
     visible = models.BooleanField(default=True)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     time_created = models.DateTimeField(auto_now_add=True)
+
+
+class Country(models.Model):
+    name = models.CharField(max_length=255)
+    full_name = models.CharField(max_length=255)
+    iso_code = models.CharField(max_length=2)
+
+
+class Contact(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    is_auditor = models.BooleanField(default=False)
+    phone = models.CharField(max_length=50)
+    address1 = models.TextField()
+    address2 = models.TextField()
+    address3 = models.TextField()
+    country = models.ForeignKey(Country, null=True, on_delete=models.PROTECT)

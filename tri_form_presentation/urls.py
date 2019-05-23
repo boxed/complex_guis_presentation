@@ -22,6 +22,8 @@ from forum import views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
+    path(r'switch_user/', views.switch_user),
+
     path(r'django/1/', views.django_example1),
     path(r'tri_form/1/', views.tri_form_example1),
 
@@ -33,4 +35,7 @@ urlpatterns = [
 
     path(r'django/3/<int:pk>/', views.DjangoExample3.as_view()),
     path(r'tri_form/3/<int:pk>/', views.tri_form_example3),
+
+    path(r'django/4/<int:pk>/', views.DjangoExample4.as_view()),
+    path(r'tri_form/4/<int:pk>/', views.tri_form_example4),
 ]
