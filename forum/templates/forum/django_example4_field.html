@@ -1,0 +1,14 @@
+<tr{% if field.css_classes or extra_css_class %} class="{{ field.css_classes|join:" " }} {{ extra_css_class }}"{% endif %}>
+    <th><label for="{{ field.id }}">{{ field.label }}</label></th>  {# <- this is actually WRONG! but since you can't call functions with arguments in django templates we actually can't do the same thing as what BaseForm._html_output does, this will have to be close enough  #}
+    <td>
+        {% if field.errors %}
+            <ul class="errorlist">
+                {% for error in field.errors %}
+                    <li class="error">{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {{ field }}
+        {# this template glosses over many details, in reality it should be more complex #}
+    </td>
+</tr>

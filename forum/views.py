@@ -126,7 +126,7 @@ def tri_form_example3(request, pk):
         request=request,
         instance=Room.objects.get(pk=pk),
         on_save=on_save,
-        form__exclude=['auditor', 'last_audit', 'auditor_notes'],
+        form__exclude=['auditor', 'last_audit'],
         form__extra_fields=[
             Field.boolean(
                 name='audit_complete',
@@ -139,6 +139,12 @@ def tri_form_example3(request, pk):
         form__field__auditor_notes__call_target=Field.textarea,
     )
 
+# The kicker here is that CreateView/UpdateView create their forms via
+# django.forms.models.modelform_factory which has a lot of parameters,
+# but you can't actually use them because there is no way to pass
+# parameters down that chain. "exclude" being maybe the most egregious case.
+
+
 ###############################################
 
 
@@ -146,11 +152,14 @@ def tri_form_example3(request, pk):
 # let's increase the complexity!
 
 # - Separate roles of staff and auditors. Now staff should be able to read auditor notes but not edit.
-# TODO: - Customize the help text for "description" based on what type of user you are
+# - Customize the help text for "description" based on what type of user you are
+# - insert a header above the audit fields
+# - style audit fields with an "admin" css class
 
 class DjangoExample4(UpdateView):
     model = Room
     fields = ['name', 'description', 'auditor_notes']
+    template_name = 'forum/django_example4.html'  # <- this is the kicker!
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class=form_class)
@@ -172,6 +181,8 @@ class DjangoExample4(UpdateView):
                     initial=self.object.last_audit,
                     disabled=True,
                 )
+
+        form.fields['description'].help_text = 'Pithy explanation' if not self.request.user.is_staff else 'Staff explanation'
 
         return form
 
@@ -201,6 +212,11 @@ def tri_form_example4(request, pk):
                 attr=None,  # don't write "audit_complete" to the Room object
                 show=request.user.contact.is_auditor,
             ),
+            Field.heading(
+                name='audit',
+                after='description',
+                show=request.user.contact.is_auditor or request.user.is_staff,
+            ),
         ],
         form__field=dict(
             auditor_notes__show=request.user.is_staff or request.user.contact.is_auditor,
@@ -213,7 +229,13 @@ def tri_form_example4(request, pk):
             last_audit__show=request.user.is_staff,
 
             description__call_target=Field.textarea,
+            description__help_text='Pithy explanation' if not request.user.is_staff else 'Staff explanation',
+
             auditor_notes__call_target=Field.textarea,
+
+            last_audit__container__attrs__class__audit=True,
+            auditor__container__attrs__class__audit=True,
+            auditor_notes__container__attrs__class__audit=True,
         ),
     )
 
