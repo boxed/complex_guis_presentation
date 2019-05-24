@@ -52,6 +52,9 @@ def tri_form_example1(request):
     return render(request, 'forum/room_form.html', {'form': form})
 
 
+###############################################
+
+
 class DjangoExample1B(CreateView):
     model = Room
     fields = ['name', 'description']
@@ -87,7 +90,9 @@ def tri_form_example2(request):
         model=Room,
         form__include=['name', 'description', 'auditor_notes'],
         form__field__auditor_notes__show=request.user.is_staff,
+
         form__field__description__call_target=Field.textarea,
+        form__field__auditor_notes__call_target=Field.textarea,
     )
 
 
@@ -135,6 +140,7 @@ def tri_form_example3(request, pk):
             ),
         ],
         form__field__auditor_notes__show=request.user.is_staff,
+
         form__field__description__call_target=Field.textarea,
         form__field__auditor_notes__call_target=Field.textarea,
     )
@@ -152,7 +158,6 @@ def tri_form_example3(request, pk):
 # let's increase the complexity!
 
 # - Separate roles of staff and auditors. Now staff should be able to read auditor notes but not edit.
-# - Customize the help text for "description" based on what type of user you are
 # - insert a header above the audit fields
 # - style audit fields with an "admin" css class
 
@@ -181,8 +186,6 @@ class DjangoExample4(UpdateView):
                     initial=self.object.last_audit,
                     disabled=True,
                 )
-
-        form.fields['description'].help_text = 'Pithy explanation' if not self.request.user.is_staff else 'Staff explanation'
 
         return form
 
@@ -229,8 +232,6 @@ def tri_form_example4(request, pk):
             last_audit__show=request.user.is_staff,
 
             description__call_target=Field.textarea,
-            description__help_text='Pithy explanation' if not request.user.is_staff else 'Staff explanation',
-
             auditor_notes__call_target=Field.textarea,
 
             last_audit__container__attrs__class__audit=True,
