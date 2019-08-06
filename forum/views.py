@@ -140,9 +140,6 @@ def tri_form_example3(request, pk):
             ),
         ],
         form__field__auditor_notes__show=request.user.is_staff,
-
-        form__field__description__call_target=Field.textarea,
-        form__field__auditor_notes__call_target=Field.textarea,
     )
 
 # The kicker here is that CreateView/UpdateView create their forms via
@@ -230,9 +227,6 @@ def tri_form_example4(request, pk):
 
             last_audit__editable=False,
             last_audit__show=request.user.is_staff,
-
-            description__call_target=Field.textarea,
-            auditor_notes__call_target=Field.textarea,
 
             last_audit__container__attrs__class__audit=True,
             auditor__container__attrs__class__audit=True,
