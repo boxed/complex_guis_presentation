@@ -42,7 +42,7 @@ def tri_form_example1(request):
         if form.is_valid():
             Room.objects.create(
                 name=form.fields_by_name.name.value,
-                description=form.fields_by_name.description,
+                description=form.fields_by_name.description.value,
             )
             return HttpResponseRedirect('/something/')
 
@@ -90,9 +90,6 @@ def tri_form_example2(request):
         model=Room,
         form__include=['name', 'description', 'auditor_notes'],
         form__field__auditor_notes__show=request.user.is_staff,
-
-        form__field__description__call_target=Field.textarea,
-        form__field__auditor_notes__call_target=Field.textarea,
     )
 
 
@@ -188,7 +185,7 @@ class DjangoExample4(UpdateView):
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        if form.cleaned_data.get('audit_complete'):
+        if self.request.user.contact.is_auditor and form.cleaned_data.get('audit_complete'):
             self.object.last_audit = datetime.now()
             self.object.auditor = self.request.user
             self.object.save()
